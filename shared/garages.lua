@@ -1,0 +1,35 @@
+-- Garages = {
+--     ["meeting point"] = {
+--         type = "ipl",
+--         coords = { exit = vector4(235.64, -1000.0, -99.0, 0.0), menu = vector4(235.64, -1000.0, -99.0, 0.0), park = vector4(235.64, -1000.0, -99.0, 0.0) },
+--         settings = { marker = { enabled = true, type = 1, r = 0, g = 255, b = 0, a = 100, x = 139.21, y = -3074.58, z = 5.86 }, npc = { enabled = true, coords = vector4(), model = "a_m_m_business_01" }, blip = { coords = vector3(), sprite = 225, color = 0, name = "Meeting Point" } },
+--         ipl = {
+--             name = "hei_carrier",
+--         }
+--         exitcoords = vector4(235.64, -1000.0, -99.0, 0.0),
+--     },
+--     ["airport"] = {
+--         buyable = { price = 10000, currency = "cash" },
+--         type = "list",
+--         coords = { exit = vector4(235.64, -1000.0, -99.0, 0.0), menu = vector4(235.64, -1000.0, -99.0, 0.0), park = vector4(235.64, -1000.0, -99.0, 0.0) },
+--         distance = 5.0,
+--         settings = { marker = { enabled = true, type = 1, r = 0, g = 255, b = 0, a = 100, x = 139.21, y = -3074.58, z = 5.86 }, npc = { enabled = true, coords = vector4(), model = "a_m_m_business_01" }, blip = { coords = vector3(), sprite = 225, color = 0, name = "Meeting Point" } },
+--         camera = true,
+--     }
+--     ["police"] = {
+--         buyable = { price = 10000, currency = "cash" },
+--         type = "list",
+--         coords = { exit = vector4(235.64, -1000.0, -99.0, 0.0), menu = vector4(235.64, -1000.0, -99.0, 0.0), park = vector4(235.64, -1000.0, -99.0, 0.0) },
+--         distance = 5.0,
+--         settings = { marker = { enabled = true, type = 1, r = 0, g = 255, b = 0, a = 100, x = 139.21, y = -3074.58, z = 5.86 }, npc = { enabled = true, coords = vector4(), model = "a_m_m_business_01" }, blip = { coords = vector3(), sprite = 225, color = 0, name = "Meeting Point" } },
+--         camera = true,
+--         job = {
+--             name = "police",
+--             grade = 1,
+--         }
+--     }
+
+-- }
+
+-- -- NOTES REGARDING CREATING GARAGES
+-- -- TO BE DONE!
