@@ -11,7 +11,76 @@ Citizen.CreateThread(function()
     end
 end)
 
-RegisterNetEvent("LudaroGarage:OpenGarageCreationMenu", function()
+function OpenImpoundMenu(data, name)
+    
+    local cars = lib.callback.await("ludaro_garage:getCars", false, "impound")
+    lib.waitFor(function()
+        if cars then return end
+    end)
+    if #cars >= 1 then
+        mainmenu = NativeUI.CreateMenu(name, locale("ImpoundDescription"))
+    _menuPool:Add(mainmenu)
+    _menuPool:RefreshIndex()
+    _menuPool:MouseControlsEnabled(false)
+    _menuPool:MouseEdgeEnabled(false)
+    _menuPool:ControlDisablingEnabled(false)
+    mainmenu:Visible(true)
+    for k,v in pairs(cars) do
+       local car = _menuPool:AddSubMenu(mainmenu, getcarname(v.properties.model, v.properties.plate), v.plate)
+        
+        local carname = NativeUI.CreateItem(locale("CarName"), "")
+        carname:RightLabel(getcarname(v.properties.model, v.properties.plate))
+        carname.Activated = function(sender, index)
+            local name = KeyboardInput(locale("CarName"), "", 30)
+            if name then
+                TriggerServerEvent("ludaro_garage:changecarname", v.plate, name)
+                carname:RightLabel(name)
+            end
+        end
+
+        local plate = NativeUI.CreateItem(locale("CarPlate"), "")
+        plate:RightLabel(v.properties.plate)
+
+        if v.milage then
+            local milage = NativeUI.CreateItem(locale("CarMilage"), "")
+            milage:RightLabel(v.milage)
+        end
+        if v.health then
+            local Health = NativeUI.CreateItem(locale("CarHealth"), "")
+            Health:RightLabel(v.health)
+            car:AddItem(Health)
+        end
+    end
+    local carlocation = getlocation(v.plate)
+    if carlocation then
+        local location = NativeUI.CreateItem(locale("CarLocation"), "")
+        location:RightLabel(getlocation(v.plate))
+        car:AddItem(location)
+    end
+
+    local fuel = getfuel(v.plate)
+    if fuel then
+      local fuelitem = NativeUI.CreateItem(locale("CarFuel"), "")
+        fuelitem:RightLabel(fuel)
+        car:AddItem(fuelitem)
+    end
+
+    local parkout = NativeUI.CreateItem(locale("ParkOut"), "")
+    parkout.Activated = function(sender, index)
+        TriggerServerEvent("ludaro_garage:parkout", v.plate, PlayerId(), data.park.coords)
+    end
+
+
+    car:AddItem(carname)
+    car:AddItem(plate)
+
+    car:AddItem(parkout)
+else
+    Notify(locale("NoCarsInImpound"))
+end
+end
+
+function openGarageCreationMenu()
     changes = {}
     local mainmenu = NativeUI.CreateMenu(locale("GarageCreationMenuTitle"), locale("GarageCreationMenuDescription"))
     _menuPool:Add(mainmenu)
@@ -283,7 +352,7 @@ RegisterNetEvent("LudaroGarage:OpenGarageCreationMenu", function()
             Notify(locale("GarageCreationError"))
         end
     end
-end)
+end
 
 RegisterCommand('testg', function(source, args, rawCommand)
     print("ah")
@@ -304,6 +373,16 @@ function OpenGarageMenu(data)
     end
 end
 
+function OpenIPLGarage(data)
+    local mainmenu = NativeUI.CreateMenu(data.name, locale("GarageDescription"))
+    _menuPool:Add(mainmenu)
+    _menuPool:RefreshIndex()
+    _menuPool:MouseControlsEnabled(false)
+    _menuPool:MouseEdgeEnabled(false)
+    _menuPool:ControlDisablingEnabled(false)
+    mainmenu:Visible(true)
+end
+
 function OpenListGarage(data)
     local mainmenu = NativeUI.CreateMenu(data.name, locale("GarageDescription"))
     _menuPool:Add(mainmenu)
@@ -312,4 +391,93 @@ function OpenListGarage(data)
     _menuPool:MouseEdgeEnabled(false)
     _menuPool:ControlDisablingEnabled(false)
     mainmenu:Visible(true)
+    garageid = data.id
+    local cars = lib.callback.await("ludaro_garage:getCars", false, garageid)
+    cars = lib.waitFor(function()
+        if cars then return end
+    end)
+    local carsmenu = _menuPool:AddSubMenu(mainmenu, locale("GarageCars"), "")
+    carsmenu.Item:RightLabel("~g~→→→")
+    _menuPool:RefreshIndex()
+    _menuPool:MouseControlsEnabled(false)
+    _menuPool:MouseEdgeEnabled(false)
+    _menuPool:ControlDisablingEnabled(false)
+
+    if #cars >= 1 then
+        for k, v in pairs(cars) do
+            local car = _menuPool:AddSubMenu(carsmenu, getcarname(v.properties.plate), v.plate)
+            car.Item:RightLabel("~g~→→→")
+            _menuPool:RefreshIndex()
+            _menuPool:MouseControlsEnabled(false)
+            _menuPool:MouseEdgeEnabled(false)
+            _menuPool:ControlDisablingEnabled(false)
+
+            local carname = NativeUI.CreateItem(locale("CarName"), "")
+            carname:RightLabel(getcarname(v.properties.model, v.properties.plate))
+            carname.Activated = function(sender, index)
+                local name = KeyboardInput(locale("CarName"), "", 30)
+                if name then
+                    TriggerServerEvent("ludaro_garage:changecarname", v.plate, name)
+                    carname:RightLabel(name)
+                end
+            end
+
+            local plate = NativeUI.CreateItem(locale("CarPlate"), "")
+            plate:RightLabel(v.properties.plate)
+
+            if v.milage then
+                local milage = NativeUI.CreateItem(locale("CarMilage"), "")
+                milage:RightLabel(v.milage)
+            end
+            if v.health then
+                local Health = NativeUI.CreateItem(locale("CarHealth"), "")
+                Health:RightLabel(v.health)
+                car:AddItem(Health)
+            end
+        end
+        local carlocation = getlocation(v.plate)
+        if carlocation then
+            local location = NativeUI.CreateItem(locale("CarLocation"), "")
+            location:RightLabel(getlocation(v.plate))
+            car:AddItem(location)
+        end
+
+        local fuel = getfuel(v.plate)
+        if fuel then
+          local fuelitem = NativeUI.CreateItem(locale("CarFuel"), "")
+            fuelitem:RightLabel(fuel)
+            car:AddItem(fuelitem)
+        end
+
+        local parkout = NativeUI.CreateItem(locale("ParkOut"), "")
+        parkout.Activated = function(sender, index)
+            TriggerServerEvent("ludaro_garage:parkout", v.plate, PlayerId(), data.coords.park)
+        end
+
+
+        car:AddItem(carname)
+        car:AddItem(plate)
+
+        car:AddItem(parkout)
+    else
+        carsmenu.Item._Enabled = false
+    end
+
+    local park = NativeUI.CreateItem(locale("ParkCar"), "")
+
+    park.Activated = function(sender, index)
+        nearestvehicle = ESX.Game.GetVehiclesInArea(GetEntityCoords(PlayerPedId()), 20)
+        if nearestevehicle[1] then
+            plate = GetVehicleNumberPlateText(nearestvehicle[1])
+            checkifowner = lib.callback("ludaro_garage:checkifowner", false, function()
+                if checkifowner then
+                    TriggerServerEvent("ludaro_garage:parkvehicle", plate)
+                else
+                    Notify(locale("NotOwner"))
+                end
+            end, plate)
+        else
+            Notify(locale("NoVehicleNearby"))
+        end
+    end
 end

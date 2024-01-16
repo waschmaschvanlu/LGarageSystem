@@ -1,189 +1,19 @@
--- function SpawnNPC(model, coords, freeze, id)
---     RequestModel(model)
---     while not HasModelLoaded(model) do
---         Citizen.Wait(0)
---     end
---     local success, ped = pcall(function()
---         return CreatePed(4, model, coords.x, coords.y, coords.z, coords.w, freeze, false)
---     end)
---     if success then
---         SetEntityInvincible(ped, true)
---         SetBlockingOfNonTemporaryEvents(ped, true)
---         FreezeEntityPosition(ped, freeze)
---         SetEntityAsMissionEntity(ped, true, true)
---         table.insert(allPeds, { ped, id }) -- Add the ped to a table of all peds
---         return ped                         -- Return the Ped
---     else
---         print("Failed to create ped for model: " .. model)
---     end
--- end
-
-function RemoveAllNPCS()
-
-end
-
--- function RemoveNPC(id)
---     for i, v in ipairs(allPeds) do
---         if v[2] == id then
---             DeleteEntity(v[1])
---             table.remove(allPeds, i)
---             break
---         end
---     end
--- end
-
--- for k, v in pairs(Garages) do
---     v.active = false
---     if v.job then
---         if v.job.name == ESX.PlayerData.job.name and v.job.grade == ESX.PlayerData.job.grade then
---             v.active = true
---         end
---     else
---         if #v.buyable == 0 or v.buyable == nil then
---             v.active = true
---         end
---     end
---     if v.active then
---         function onEnter(self)
---             v = self.data
---             SpawnNPC(v.settings.npc.model, v.settings.npc.coords, true, self.id)
---             print('entered zone', self.id)
---         end
-
---         function onExit(self)
---             RemoveNPC(self.id)
---             print('exited zone', self.id)
---         end
-
---         function inside(self)
---             markersettings = self.data.settings.marker
---             Citizen.Wait(0)
---             if self.data.settings.marker.enabled then
---                 DrawMarker(markersettings.type, markersettings.x, markersettings.y, markersettings.z, 0.0, 0.0, 0.0,
---                     0.0, 0.0, 0.0, markersettings.scale or 1.0, markersettings.scale or 1.0,
---                     markersettings.scale or 1.0, markersettings.r, markersettings.g, markersettings.b,
---                     markersettings.a, false, true, 2, false, false, false, false)
---             end
---             distance = (#self.data.coords.menu - GetEntityCoords(PlayerPedId()))
---             if self.data.distance <= distance then
---                 DrawText3D(self.data.coords.menu, "Drücke ~g~E~w~ um die Garage zu öffnen")
---                 DrawTextUI("Drücke ~g~E~w~ um die Garage zu öffnen")
---                 if IsControlJustReleased(0, 38) then
---                     OpenGarageMenu(self.data)
---                 end
---             end
---         end
-
---         coords = v.coords.exit or v.coords.menu or v.coords.park or v.coords
---         local box = lib.zones.box({
---             coords = v.coords.menu,
---             size = vec3(v.distance, v.distance, v.ditance),
---             rotation = 45,
---             debug = Debug,
---             inside = inside,
---             onEnter = onEnter,
---             onExit = onExit,
---             data = v,
---             name = k,
---         })
-
---         blipsettings = v.settings.blip
---         coords = blipsettings.coords or v.coords.menu or v.coords.exit or v.coords.park
---         local blip = AddBlipForCoord(coords.x, coords.y, coords.z)
---         SetBlipSprite(blip, blipsettings.sprite)
---         SetBlipScale(blip, blipsettings.scale or 1.0)
---         SetBlipColour(blip, blipsettings.color)
---         SetBlipAsShortRange(blip, true)
---         BeginTextCommandSetBlipName("STRING")
---         AddTextComponentString(blipsettings.name or k)
---         EndTextCommandSetBlipName(blip)
---     end
--- end
-
-
--- CreateBlips()
--- DrawMaker()
--- DrawNPCS()
-
-
-
--- function DrawMaker()
---     Citizen.CreateThread(function()
---         while true do
---             for k, v in pairs(Garages) do
---                 Citizen.Wait(0)
---                 markersettings = v.settings.marker
---                 if markersettings.enabled and v.active then
---                     DrawMarker(markersettings.type, markersettings.x, markersettings.y, markersettings.z, 0.0, 0.0, 0.0,
---                         0.0, 0.0, 0.0, markersettings.scale or 1.0, markersettings.scale or 1.0,
---                         markersettings.scale or 1.0, markersettings.r, markersettings.g, markersettings.b,
---                         markersettings.a, false, true, 2, false, false, false, false)
---                 end
---             end
---         end
---     end)
--- end
-
--- function DrawNPCS()
---     Citizen.CreateThread(function()
---         while true do
---             for k, v in pairs(Garages) do
---                 if v.settings.npc.enabled and v.active then
---                     Citizen.Wait(500)
---                     npcsettings = v.settings.npc
---                     distancetonpc = #(GetEntityCoords(PlayerPedId()) - v.settings.npc.coords)
---                     distance = v.distance or 5.0
---                     if istancetonpc < distance then
---                         npc = SpawnNPC(npcsettings.model, npcsettings.coords, true)
---                     else
---                         RemoveNPC(npc)
---                     end
---                 end
---             end
---         end
---     end)
--- end
-
--- allPeds = {}
-
-
-
--- function RemoveNPC(ped)
---     if DoesEntityExist(ped) then
---         for i, v in ipairs(allPeds) do
---             if v == ped then
---                 table.remove(allPeds, i)
---                 break
---             end
---         end
---         DeleteEntity(ped)
---     end
--- end
-
-
-
--- Citizen.CreateThread(function()
---     while true do
---  if
---     end
--- end)
-
 function CreateNPCZone(data)
     coords = json.decode(data.coords).entrance
     function onEnternpc(self)
-        print('entered zone', self.id)
-        CreateNPC(data, self.id)
+        print('entered zone', self.name)
+        CreateNPC(data, self.name)
     end
 
     function onExitnpc(self)
-        print('exited zone', self.id)
-        DeleteNPC(self.id)
+        print('exited zone', self.name)
+        DeleteNPC(self.name)
     end
 
     function insidenpc(self)
     end
 
-    local box = lib.zones.box({
+    NPCBox = lib.zones.box({
         coords = coords,
         size = vec3(LoadingRange, LoadingRange, LoadingRange),
         rotation = 0,
@@ -213,7 +43,7 @@ function CreateEntrance(data)
         end
     end
 
-    local box2 = lib.zones.box({
+    EntranceBox = lib.zones.box({
         coords = coords,
         size = vec3(2.0, 2.0, 2.0),
         rotation = 0,
@@ -229,7 +59,7 @@ end
 allPeds = {}
 function CreateNPC(data, name)
     npc = json.decode(data.npc)
-    coords = json.decode(data.coords).entrance
+    coords = json.decode(data.coords).entrance or data.coords
     if IsModelValid(npc.Model) then
         model = GetHashKey(npc.Model)
     else
@@ -289,7 +119,7 @@ function CreateMarkerZone(data)
             alpha, bobupanddown, faceCamera, 2, false, false, false, false)
     end
 
-    local box = lib.zones.box({
+    Markerbox = lib.zones.box({
         coords = coords,
         size = vec3(LoadingRange, LoadingRange, LoadingRange),
         rotation = 0,
@@ -307,7 +137,7 @@ end
 
 function CreateBlip(data)
     blipp = json.decode(data.blip)
-    coords = json.decode(data.coords).entrance
+    coords = json.decode(data.coords).entrance or data.blip.coords or data.coords
     local blip = AddBlipForCoord(coords.x, coords.y, coords.z)
     SetBlipSprite(blip, blipp.sprite)
     SetBlipScale(blip, blipp.scale or 1.0)
@@ -338,14 +168,14 @@ function CreatePark(data)
                     if checkifowner then
                         TriggerServerEvent("ludaro_garage:parkvehicle", plate)
                     else
-                        Notify("You do not own this vehicle.")
+                        Notify(locale("notOwner"))
                     end
                 end, plate)
             end
         end
     end
 
-    local box = lib.zones.box({
+    Parkbox = lib.zones.box({
         coords = parkcoords,
         size = vec3(LoadingRange, LoadingRange, LoadingRange),
         rotation = 0,
@@ -372,7 +202,7 @@ function CreateExit(data)
             255, false, true, 2, false, false, false, false)
     end
 
-    local box = lib.zones.box({
+ Exitbox = lib.zones.box({
         coords = exitcoords,
         size = vec3(LoadingRange, LoadingRange, LoadingRange),
         rotation = 0,
@@ -423,3 +253,20 @@ end
 
 local count, identifier, job, grade = lib.callback.await('ludaro_garage:sendata', false)
 CreateGarages(count, identifier, job, grade)
+
+
+function refreshgarages()
+    
+    ParkBox:remove()
+    ExitBox:remove()
+    NPCbox:remove()
+    MarkerBox:remove()
+    EntranceBox:remove()
+    local count, identifier, job, grade = lib.callback.await('ludaro_garage:sendata', false)
+    for k,v in pairs(count) do
+        DeleteNPC(v.name)
+    end
+CreateGarages(count, identifier, job, grade)
+
+
+end

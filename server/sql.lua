@@ -56,24 +56,11 @@ end
 
 lib.callback.register('ludaro_garage:sendata', function(source)
     return GetAllJsonAndConvertToTable(GetData(nil, nil)), ESX.GetPlayerFromId(source).identifier, ESX.GetPlayerFromId(source).job.name, ESX.GetPlayerFromId(source).job.grade
-end)
+end) -- this callback is here so it can execute faster, 
 
 
 
-entercoord = vector3(223.0, -809.0, 30.0)
-exitcoord = vector3(223.0, -809.0, 30.0)
-garagecoord = vector3(223.0, -809.0, 30.0)
 
-coords = {
-    enter = vector3(223.0, -809.0, 30.0),
-    exit = vector3(223.0, -809.0, 30.0),
-    garage = vector3(223.0, -809.0, 30.0)
-}
 
--- coords = json.encode(coords)
--- local id = MySQL.insert.await('INSERT INTO `ludaro_garagesystem` (coords) VALUES (?)', {
---     coords
--- })
--- print(id)
 
 
