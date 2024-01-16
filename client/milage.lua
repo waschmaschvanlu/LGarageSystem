@@ -9,8 +9,8 @@ RegisterNetEvent("baseevents:leftVehicle", function(vehicle, seat, displayname)
     local distance = #(currentcoords2 - currentcoords)
     plate = GetVehicleNumberPlateText(vehicle)
     if distance > 1 then
-        print("saving milage".. distance)
-        TriggerServerEvent("milage:save", plate, distance)
+        print("saving milage".. distance "for vehicle" .. plate)
+        --TriggerServerEvent("milage:save", plate, distance)
     end
 
 

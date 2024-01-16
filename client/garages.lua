@@ -1,4 +1,5 @@
-function CreateNPCZone(data)
+boxes = {}
+function CreateNPCZone(data, k)
     coords = json.decode(data.coords).entrance
     function onEnternpc(self)
         print('entered zone', self.name)
@@ -13,7 +14,7 @@ function CreateNPCZone(data)
     function insidenpc(self)
     end
 
-    NPCBox = lib.zones.box({
+    boxes[k].NPCBox = lib.zones.box({
         coords = coords,
         size = vec3(LoadingRange, LoadingRange, LoadingRange),
         rotation = 0,
@@ -26,7 +27,7 @@ function CreateNPCZone(data)
     })
 end
 
-function CreateEntrance(data)
+function CreateEntrance(data, k)
     coords = json.decode(data.coords).entrance
     function onEnterentr(self)
         print('entered zone', self.id)
@@ -43,7 +44,7 @@ function CreateEntrance(data)
         end
     end
 
-    EntranceBox = lib.zones.box({
+    boxes[k].EntranceBox = lib.zones.box({
         coords = coords,
         size = vec3(2.0, 2.0, 2.0),
         rotation = 0,
@@ -95,7 +96,7 @@ function RemoveAllNPCS()
     end
 end
 
-function CreateMarkerZone(data)
+function CreateMarkerZone(data, k)
     coords = json.decode(data.coords).entrance
     markersettings = json.decode(data.marker)
     alpha = markersettings.Alpha or 255
@@ -119,7 +120,7 @@ function CreateMarkerZone(data)
             alpha, bobupanddown, faceCamera, 2, false, false, false, false)
     end
 
-    Markerbox = lib.zones.box({
+    boxes[k].Markerbox = lib.zones.box({
         coords = coords,
         size = vec3(LoadingRange, LoadingRange, LoadingRange),
         rotation = 0,
@@ -134,7 +135,7 @@ end
 
 function CreateExit()
 end
-
+blips = {}
 function CreateBlip(data)
     blipp = json.decode(data.blip)
     coords = json.decode(data.coords).entrance or data.blip.coords or data.coords
@@ -146,9 +147,10 @@ function CreateBlip(data)
     BeginTextCommandSetBlipName("STRING")
     AddTextComponentString(data.name or "Garageeee")
     EndTextCommandSetBlipName(blip)
+    table.insert(blips, blip)
 end
 
-function CreatePark(data)
+function CreatePark(data, k)
     parkcoords = json.decode(data.coords).garage
     function onEnterpark(self)
     end
@@ -175,7 +177,7 @@ function CreatePark(data)
         end
     end
 
-    Parkbox = lib.zones.box({
+    boxes[k].Parkbox = lib.zones.box({
         coords = parkcoords,
         size = vec3(LoadingRange, LoadingRange, LoadingRange),
         rotation = 0,
@@ -188,7 +190,7 @@ function CreatePark(data)
     })
 end
 
-function CreateExit(data)
+function CreateExit(data, k)
     exitcoords = json.decode(data.coords).exit
     function onEnterexit(self)
     end
@@ -202,7 +204,7 @@ function CreateExit(data)
             255, false, true, 2, false, false, false, false)
     end
 
- Exitbox = lib.zones.box({
+ boxes[k].Exitbox = lib.zones.box({
         coords = exitcoords,
         size = vec3(LoadingRange, LoadingRange, LoadingRange),
         rotation = 0,
@@ -241,12 +243,12 @@ end
 function CreateGarages(data, identifier, job, grade)
     for k, v in pairs(data) do
         if hasrightjob(job, grade, v) or isowner(v, identifier) then
-            CreateNPCZone(v)
-            CreateBlip(v)
-            CreateMarkerZone(v)
-            CreateEntrance(v)
-            CreatePark(v)
-            CreateExit(v)
+            CreateNPCZone(v, k)
+            CreateBlip(v, k)
+            CreateMarkerZone(v, k)
+            CreateEntrance(v, k)
+            CreatePark(v, k)
+            CreateExit(v, k)
         end
     end
 end
@@ -256,12 +258,13 @@ CreateGarages(count, identifier, job, grade)
 
 
 function refreshgarages()
-    
-    ParkBox:remove()
-    ExitBox:remove()
-    NPCbox:remove()
-    MarkerBox:remove()
-    EntranceBox:remove()
+   for k,v in pairs(boxes) do
+    v:remove()
+   end 
+   for k,v in pairs(blips) do
+    RemoveBlip(v)
+   end
+   boxes = {}
     local count, identifier, job, grade = lib.callback.await('ludaro_garage:sendata', false)
     for k,v in pairs(count) do
         DeleteNPC(v.name)
