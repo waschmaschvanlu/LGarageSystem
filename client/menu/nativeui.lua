@@ -354,14 +354,11 @@ function openGarageCreationMenu()
     end
 end
 
-RegisterCommand('testg', function(source, args, rawCommand)
-    print("ah")
-    TriggerEvent("LudaroGarage:OpenGarageCreationMenu")
-end)
-
+if Debug then
 RegisterCommand("createGarage", function()
     TriggerEvent("LudaroGarage:OpenGarageCreationMenu")
 end)
+end
 
 
 function OpenGarageMenu(data)
@@ -451,7 +448,7 @@ function OpenListGarage(data)
 
         local parkout = NativeUI.CreateItem(locale("ParkOut"), "")
         parkout.Activated = function(sender, index)
-            TriggerServerEvent("ludaro_garage:parkout", v.plate, PlayerId(), data.coords.park)
+            TriggerServerEvent("ludaro_garage:parkout", v.plate, PlayerId(), data.coords.park, data.price)
         end
 
 
