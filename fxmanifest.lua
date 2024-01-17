@@ -54,7 +54,9 @@ shared_scripts {
 dependencies {
     '/assetpacks',
     'es_extended',
-    'ox_lib'
+    'ox_lib',
+    "oxmysql",
+    "bob74_ipl",
 }
 
 files {
